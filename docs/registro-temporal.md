@@ -80,6 +80,54 @@ estão no atestado publicado em paralelo. Raiz do manifesto:
 f0df78123c8fd696d279734cf8901f01e96cdafe9c9a36ae76b4ff86f9644093
 ```
 
+## Segunda classe de prova: registro institucional de terceiro
+
+Verificado em 11/09/2026, a partir do anexo em PDF fornecido pelo autor.
+
+Diferente do artefato de 09/01/2024 — cuja força está no metadado de um
+arquivo sob controle do autor — esta classe de prova é **gerada pela
+infraestrutura de um terceiro institucional**, e por isso não depende da
+boa-fé de quem a apresenta.
+
+| Data | Evento | Origem do registro |
+|---|---|---|
+| 25/02/2026 | Representante de desenvolvimento de negócios do Google Cloud (LATAM) abre contato sobre "seu projeto em AI", em resposta a solicitação do autor | servidores do Google |
+| 26/02/2026 | Autor envia "Agendamento — Apresentação de Arquitetura" | thread de e-mail |
+| 28/02/2026 | Autor envia "Projeto Gaia — Dossiê" | thread de e-mail |
+| 02/03/2026 | Reunião confirmada pelo representante | thread de e-mail |
+| 04/03/2026 | Convite de calendário emitido: quarta-feira, 13h30–14h00 (Brasília), convidado `vendas@sounavy.com` | Google Calendar / Meet |
+
+### O que isto estabelece
+
+- O projeto **existia sob o nome "Gaia"** em fevereiro de 2026, com
+  arquitetura apresentada e dossiê enviado a uma empresa terceira.
+- As datas estão em **sistemas do Google**, não em arquivos do autor. Não há
+  como o autor tê-las escrito.
+- O domínio `sounavy.com` já operava como endereço do projeto.
+
+### O que isto NÃO estabelece
+
+- **Não prova 2024.** Todo este conjunto é de 2026. A questão da
+  anterioridade de dois anos segue dependendo do artefato de 09/01/2024 e do
+  que mais aparecer daquele período.
+- **Contato comercial não é endosso.** Um representante de desenvolvimento de
+  negócios prospecta muitos interessados; a reunião comprova o que foi
+  apresentado e quando, não que a empresa tenha avaliado, aprovado ou
+  validado o conteúdo. Tratar a reunião como aval seria exatamente o tipo de
+  inflação que este registro existe para evitar.
+- **Conversa com assistente de IA não é validação externa.** Uma das páginas
+  do anexo registra diálogo com um modelo concordando com a tese. Isso
+  documenta que a conversa ocorreu e quando; um modelo concordar com quem
+  escreve não é corroboração independente.
+
+### Dados omitidos deste registro, de propósito
+
+O anexo contém nome e endereço profissional de um terceiro identificável,
+além de código de sala e PIN de reunião. Nada disso foi transcrito: são dados
+de outra pessoa e credenciais de acesso, e este repositório pode ser lido
+publicamente. O original permanece com o autor, e é ele que vale como prova —
+esta tabela é índice, não substituto.
+
 ## Limite desta sessão
 
 Este documento registra o que existe **neste repositório**. Ele não é, e não
