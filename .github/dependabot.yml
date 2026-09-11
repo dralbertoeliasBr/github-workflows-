@@ -1,0 +1,20 @@
+version: 2
+
+updates:
+  # Mantém as GitHub Actions do CI atualizadas. Com as actions fixadas por SHA
+  # (ver scripts/pin-actions.sh), o Dependabot atualiza o SHA e escreve a
+  # versão correspondente no comentário ao lado.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"
+      include: scope
+    labels:
+      - dependencies
+      - seguranca

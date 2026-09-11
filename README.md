@@ -13,7 +13,17 @@ os registros dela.
 | [`scripts/find-dns-zone.sh`](scripts/find-dns-zone.sh) | O script. Roda em qualquer lugar com `gcloud` autenticado. |
 | [`.github/workflows/dns-zone-lookup.yml`](.github/workflows/dns-zone-lookup.yml) | Roda o script pelo GitHub Actions, disparado por botão. |
 | [`docs/como-rodar.md`](docs/como-rodar.md) | Os três caminhos, incluindo o que funciona no celular. |
-| [`docs/sounavy-dns.md`](docs/sounavy-dns.md) | O que já foi apurado sobre `sounavy.com`, e dois problemas achados. |
+| [`docs/sounavy-dns.md`](docs/sounavy-dns.md) | O que já foi apurado sobre `sounavy.com`, e os problemas achados. |
+
+## Blindagem
+
+| Arquivo | O que é |
+|---|---|
+| [`docs/blindagem.md`](docs/blindagem.md) | O que já está aplicado e o checklist de interruptores do GitHub, feito para o celular. |
+| [`SECURITY.md`](SECURITY.md) | Política de segurança e o achado aberto: **`sounavy.com` não tem DMARC**. |
+| [`scripts/pin-actions.sh`](scripts/pin-actions.sh) | Fixa as GitHub Actions por SHA de commit, em vez de tag móvel. |
+| [`docs/registro-temporal.md`](docs/registro-temporal.md) | Carimbo de tempo verificável do commit fundador, e o que ele prova. |
+| [`CLAUDE.md`](CLAUDE.md) | Contexto que sobrevive ao fim de cada sessão. |
 
 ### O jeito mais rápido
 

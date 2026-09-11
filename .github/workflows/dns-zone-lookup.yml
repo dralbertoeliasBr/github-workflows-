@@ -20,17 +20,24 @@ on:
         required: false
         default: ''
 
-permissions:
-  contents: read
-  id-token: write   # necessario para Workload Identity Federation
+# Nenhuma permissao por padrao; cada job pede so o que precisa.
+permissions: {}
 
 jobs:
   buscar:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      id-token: write   # necessario para Workload Identity Federation
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Nao deixa o GITHUB_TOKEN gravado no .git/config do runner.
+          persist-credentials: false
 
       - name: Conferir se a credencial existe
         id: cred
