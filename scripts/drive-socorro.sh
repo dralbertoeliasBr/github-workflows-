@@ -14,6 +14,7 @@
 #        ./scripts/drive-socorro.sh listar-lixeira --midia    # só fotos e vídeos
 #        ./scripts/drive-socorro.sh restaurar                 # traz tudo de volta
 #        ./scripts/drive-socorro.sh restaurar --midia         # só fotos e vídeos
+#        ./scripts/drive-socorro.sh datar "2024"              # data de criação
 #        ./scripts/drive-socorro.sh listar-publicos           # o que está público
 #        ./scripts/drive-socorro.sh fechar-publicos --confirmar
 #
@@ -30,11 +31,13 @@ shift || true
 
 SOMENTE_MIDIA=0
 CONFIRMAR=0
+TERMO=""
 for arg in "$@"; do
   case "${arg}" in
     --midia)     SOMENTE_MIDIA=1 ;;
     --confirmar) CONFIRMAR=1 ;;
-    *) echo "Opcao desconhecida: ${arg}" >&2; exit 2 ;;
+    --*) echo "Opcao desconhecida: ${arg}" >&2; exit 2 ;;
+    *)   TERMO="${arg}" ;;
   esac
 done
 
@@ -91,7 +94,7 @@ listar() {
     local url resp
     url="${API}/files?q=$(python3 -c "
 import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "${consulta}")"
-    url+="&pageSize=1000&fields=nextPageToken,files(id,name,mimeType,size)"
+    url+="&pageSize=1000&fields=nextPageToken,files(id,name,mimeType,size,createdTime,modifiedTime)"
     url+="&supportsAllDrives=true&includeItemsFromAllDrives=true"
     [[ -n "${token_pagina}" ]] && url+="&pageToken=${token_pagina}"
 
@@ -108,7 +111,9 @@ for f in d.get("files", []):
     print("\t".join([f["id"],
                      f.get("name", "(sem nome)").replace("\t", " "),
                      f.get("mimeType", ""),
-                     str(f.get("size", "") or "")]))
+                     str(f.get("size", "") or ""),
+                     (f.get("createdTime", "") or "")[:10],
+                     (f.get("modifiedTime", "") or "")[:10]]))
 open(sys.argv[1], "w").write(d.get("nextPageToken", ""))
 ' "${tmp_token}" <<<"${resp}" || { rm -f "${tmp_token}"; return 3; }
 
@@ -133,6 +138,38 @@ for u in ['B','KB','MB','GB','TB']:
 else: print(f'{n:.1f}PB')" "$1"
 }
 
+acao_datar() {
+  local termo="${TERMO}"
+  if [[ -z "${termo}" ]]; then
+    echo "Uso: $0 datar \"parte do nome\"" >&2
+    exit 2
+  fi
+
+  echo "Procurando por: ${termo}"
+  echo "(inclui itens na lixeira)"
+  echo
+
+  local n=0
+  while IFS=$'\t' read -r id nome tipo tamanho criado modificado; do
+    [[ -z "${id}" ]] && continue
+    n=$((n + 1))
+    printf '  criado %s  modificado %s  %s\n' \
+      "${criado:--}" "${modificado:--}" "${nome}"
+  done < <(listar "name contains '${termo//\'/}'")
+
+  echo
+  echo "============================================"
+  if [[ ${n} -eq 0 ]]; then
+    echo "Nada encontrado com esse termo."
+  else
+    echo "${n} item(ns)."
+    echo
+    echo "A data de criacao vem dos metadados do proprio Google, nao do nome"
+    echo "nem do conteudo do arquivo. Ela acompanha o arquivo mesmo depois de"
+    echo "restaurado da lixeira, e nao muda por edicao posterior."
+  fi
+}
+
 consulta_lixeira() {
   if [[ ${SOMENTE_MIDIA} -eq 1 ]]; then
     echo "trashed = true and (mimeType contains 'image/' or mimeType contains 'video/')"
@@ -149,11 +186,11 @@ acao_listar_lixeira() {
   echo
 
   local n=0 bytes=0
-  while IFS=$'\t' read -r id nome tipo tamanho; do
+  while IFS=$'\t' read -r id nome tipo tamanho criado modificado; do
     [[ -z "${id}" ]] && continue
     n=$((n + 1))
     [[ "${tamanho}" =~ ^[0-9]+$ ]] && bytes=$((bytes + tamanho))
-    printf '  %-9s  %s\n' "$(humano "${tamanho}")" "${nome}"
+    printf '  criado %s  %-9s  %s\n' "${criado:--}" "$(humano "${tamanho}")" "${nome}"
   done < <(listar "$(consulta_lixeira)")
 
   echo
@@ -178,7 +215,7 @@ acao_restaurar() {
   echo
 
   local ok=0 falha=0
-  while IFS=$'\t' read -r id nome tipo tamanho; do
+  while IFS=$'\t' read -r id nome tipo tamanho criado modificado; do
     [[ -z "${id}" ]] && continue
     local resp
     resp="$(curl -sS -X PATCH "${AUTH[@]}" \
@@ -208,7 +245,7 @@ acao_listar_publicos() {
   echo
 
   local n=0
-  while IFS=$'\t' read -r id nome tipo tamanho; do
+  while IFS=$'\t' read -r id nome tipo tamanho criado modificado; do
     [[ -z "${id}" ]] && continue
     n=$((n + 1))
     local marca="arquivo"
@@ -245,7 +282,7 @@ acao_fechar_publicos() {
   echo
 
   local ok=0 falha=0
-  while IFS=$'\t' read -r id nome tipo tamanho; do
+  while IFS=$'\t' read -r id nome tipo tamanho criado modificado; do
     [[ -z "${id}" ]] && continue
 
     # Descobre o id da permissao do tipo "anyone" neste item.
@@ -295,10 +332,11 @@ except Exception:
 case "${ACAO}" in
   listar-lixeira)   preparar; acao_listar_lixeira ;;
   restaurar)        preparar; acao_restaurar ;;
+  datar)            preparar; acao_datar ;;
   listar-publicos)  preparar; acao_listar_publicos ;;
   fechar-publicos)  [[ ${CONFIRMAR} -eq 1 ]] && preparar; acao_fechar_publicos ;;
   ajuda|--help|-h)
-    sed -n '2,23p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'
     ;;
   *)
     echo "Subcomando desconhecido: ${ACAO}" >&2
