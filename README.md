@@ -24,6 +24,7 @@ os registros dela.
 | [`scripts/pin-actions.sh`](scripts/pin-actions.sh) | Fixa as GitHub Actions por SHA de commit, em vez de tag móvel. |
 | [`docs/registro-temporal.md`](docs/registro-temporal.md) | Carimbo de tempo verificável do commit fundador, e o que ele prova. |
 | [`scripts/drive_socorro.py`](scripts/drive_socorro.py) | **Recupera a lixeira do Drive e fecha compartilhamentos públicos, em lote.** |
+| [`scripts/varredura.py`](scripts/varredura.py) | Padrões de varredura de matriz, com round-trip verificado e medição por zlib. |
 | [`tests/`](tests/) | Suíte de testes — `python3 -m unittest discover -s tests` |
 | [`docs/incidente-drive.md`](docs/incidente-drive.md) | Ocorrência aberta: exposição pública em cascata no Google Drive e apps com acesso à conta. |
 | [`CLAUDE.md`](CLAUDE.md) | Contexto que sobrevive ao fim de cada sessão. |

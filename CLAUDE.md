@@ -81,6 +81,25 @@ Ao tratar deste assunto:
 - Entre os arquivos perdidos há fotos de família. Isso é perda pessoal, não
   um item de inventário — trate como tal.
 
+## Varredura de matriz (adendo ao R45)
+
+`scripts/varredura.py` implementa e mede os padrões de leitura propostos.
+Resultados já estabelecidos, com round-trip verificado — não refazer sem
+motivo:
+
+- Toda ordem de varredura é **permutação**: nenhuma captura mais informação
+  que outra. O que muda é localidade, medida em bytes após zlib.
+- O **boustrofédon aninhado** (troca a cada 2 linhas) é sempre pior que o
+  simples. É decorativo — a conclusão está travada em teste.
+- O **boustrofédon simples** ajuda ~2,5% em dado tipo foto e **piora** em dado
+  regular, porque troca delta constante por delta alternado.
+- O ganho do boustrofédon é limitado a ~1/largura das transições.
+- O achado principal: o **deslocamento d = largura** vence tudo (−10,5% em
+  foto sintética), e o teto de −12 proposto no adendo nunca o alcança. O
+  deslocamento importa mais que a ordem de varredura.
+- O zigue-zague diagonal do JPEG aplicado a pixel cru é muito pior; no JPEG
+  ele opera sobre coeficientes DCT, não sobre o pixel.
+
 ## Convenções
 
 - Documentação e mensagens de commit em português.
