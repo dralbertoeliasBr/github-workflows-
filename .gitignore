@@ -1,0 +1,12 @@
+# Credenciais — NUNCA commitar
+chave.json
+*-key.json
+*credentials*.json
+*service-account*.json
+gha-creds-*.json
+.env
+.env.*
+
+# Saídas de execução
+resultado.txt
+*.log

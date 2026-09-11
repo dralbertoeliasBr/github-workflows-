@@ -1,0 +1,116 @@
+name: Buscar zona DNS no Google Cloud
+
+# Rode este workflow pelo celular:
+#   GitHub (app ou navegador) -> Actions -> "Buscar zona DNS no Google Cloud"
+#   -> Run workflow -> preencha o dominio -> Run.
+# O resultado aparece na aba "Summary" da execucao, legivel no telefone.
+#
+# Pre-requisito (feito uma unica vez): cadastrar o secret GCP_SA_KEY.
+# Veja docs/como-rodar.md.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dominio:
+        description: 'Dominio a procurar (ex: sounavy.com)'
+        required: true
+        default: 'sounavy.com'
+      projetos:
+        description: 'IDs dos projetos, separados por espaco (vazio = lista padrao)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  id-token: write   # necessario para Workload Identity Federation
+
+jobs:
+  buscar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Conferir se a credencial existe
+        id: cred
+        env:
+          SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          WIF_PROVIDER: ${{ secrets.GCP_WIF_PROVIDER }}
+        run: |
+          if [ -n "$SA_KEY" ]; then
+            echo "metodo=sa_key" >> "$GITHUB_OUTPUT"
+          elif [ -n "$WIF_PROVIDER" ]; then
+            echo "metodo=wif" >> "$GITHUB_OUTPUT"
+          else
+            echo "metodo=nenhum" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Falhar com instrucao clara se faltar credencial
+        if: steps.cred.outputs.metodo == 'nenhum'
+        run: |
+          {
+            echo "## Falta a credencial do Google Cloud"
+            echo
+            echo "Este workflow precisa de um secret no repositorio para conseguir"
+            echo "ler o Cloud DNS. Cadastre **um** dos dois:"
+            echo
+            echo "- \`GCP_SA_KEY\` — o JSON de uma chave de service account (caminho mais simples)"
+            echo "- \`GCP_WIF_PROVIDER\` + \`GCP_SA_EMAIL\` — Workload Identity Federation (sem chave, mais seguro)"
+            echo
+            echo "O passo a passo esta em \`docs/como-rodar.md\`."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "Credencial ausente — veja o Summary desta execucao." >&2
+          exit 1
+
+      - name: Autenticar no Google Cloud (chave de service account)
+        if: steps.cred.outputs.metodo == 'sa_key'
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Autenticar no Google Cloud (Workload Identity Federation)
+        if: steps.cred.outputs.metodo == 'wif'
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_SA_EMAIL }}
+
+      - name: Instalar o gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Procurar a zona
+        id: busca
+        env:
+          PROJETOS: ${{ inputs.projetos }}
+        run: |
+          chmod +x scripts/find-dns-zone.sh
+          set +e
+          ./scripts/find-dns-zone.sh "${{ inputs.dominio }}" | tee resultado.txt
+          echo "status=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Publicar o resultado no Summary
+        if: always()
+        run: |
+          {
+            echo "## Busca da zona DNS de \`${{ inputs.dominio }}\`"
+            echo
+            if [ "${{ steps.busca.outputs.status }}" = "0" ]; then
+              echo "Zona encontrada."
+            else
+              echo "Zona nao encontrada nos projetos consultados."
+            fi
+            echo
+            echo '```'
+            cat resultado.txt 2>/dev/null || echo "(sem saida)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Guardar o resultado como artefato
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultado-dns-${{ inputs.dominio }}
+          path: resultado.txt
+          if-no-files-found: ignore
