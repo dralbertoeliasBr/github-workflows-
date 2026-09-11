@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # Nao deixa o GITHUB_TOKEN gravado no .git/config do runner.
           persist-credentials: false
