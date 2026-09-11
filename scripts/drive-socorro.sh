@@ -14,7 +14,8 @@
 #        ./scripts/drive-socorro.sh listar-lixeira --midia    # só fotos e vídeos
 #        ./scripts/drive-socorro.sh restaurar                 # traz tudo de volta
 #        ./scripts/drive-socorro.sh restaurar --midia         # só fotos e vídeos
-#        ./scripts/drive-socorro.sh datar "2024"              # data de criação
+#        ./scripts/drive-socorro.sh datar "raio"              # data de criação
+#        ./scripts/drive-socorro.sh periodo 2024              # tudo criado em 2024
 #        ./scripts/drive-socorro.sh listar-publicos           # o que está público
 #        ./scripts/drive-socorro.sh fechar-publicos --confirmar
 #
@@ -167,6 +168,55 @@ acao_datar() {
     echo "A data de criacao vem dos metadados do proprio Google, nao do nome"
     echo "nem do conteudo do arquivo. Ela acompanha o arquivo mesmo depois de"
     echo "restaurado da lixeira, e nao muda por edicao posterior."
+  fi
+}
+
+acao_periodo() {
+  local ano="${TERMO}"
+  if [[ ! "${ano}" =~ ^[0-9]{4}$ ]]; then
+    echo "Uso: $0 periodo 2024" >&2
+    exit 2
+  fi
+  local seguinte=$((ano + 1))
+
+  echo "Tudo que foi criado em ${ano} (inclui o que esta na lixeira)"
+  echo
+
+  local n=0 imagens=0 tmp
+  tmp="$(mktemp)"
+  while IFS=$'\t' read -r id nome tipo tamanho criado modificado; do
+    [[ -z "${id}" ]] && continue
+    n=$((n + 1))
+    local marca="  "
+    case "${tipo}" in
+      image/*)  marca="IM"; imagens=$((imagens + 1)) ;;
+      video/*)  marca="VD" ;;
+      application/vnd.google-apps.folder) marca="PA" ;;
+      application/pdf) marca="PD" ;;
+    esac
+    printf '%s  %s  %-9s  %s\n' "${criado:--}" "${marca}" \
+      "$(humano "${tamanho}")" "${nome}" >>"${tmp}"
+  done < <(listar "createdTime >= '${ano}-01-01T00:00:00' and createdTime < '${seguinte}-01-01T00:00:00'")
+
+  sort "${tmp}"
+  rm -f "${tmp}"
+
+  echo
+  echo "============================================"
+  if [[ ${n} -eq 0 ]]; then
+    echo "Nada criado em ${ano} foi encontrado."
+    echo
+    echo "Se o material ja passou de 30 dias na lixeira, a exclusao e definitiva."
+  else
+    echo "${n} item(ns) de ${ano} · ${imagens} imagem(ns)"
+    echo
+    echo "IM=imagem  VD=video  PA=pasta  PD=pdf"
+    echo
+    echo "A data a esquerda e o createdTime do proprio Google. Ela nao muda por"
+    echo "edicao posterior e sobrevive a restauracao da lixeira."
+    echo
+    echo "Para trazer de volta o que estiver na lixeira:"
+    echo "  $0 restaurar"
   fi
 }
 
@@ -333,10 +383,11 @@ case "${ACAO}" in
   listar-lixeira)   preparar; acao_listar_lixeira ;;
   restaurar)        preparar; acao_restaurar ;;
   datar)            preparar; acao_datar ;;
+  periodo)          preparar; acao_periodo ;;
   listar-publicos)  preparar; acao_listar_publicos ;;
   fechar-publicos)  [[ ${CONFIRMAR} -eq 1 ]] && preparar; acao_fechar_publicos ;;
   ajuda|--help|-h)
-    sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
     ;;
   *)
     echo "Subcomando desconhecido: ${ACAO}" >&2
