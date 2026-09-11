@@ -66,8 +66,9 @@ Registrada em `docs/incidente-drive.md` (11/09/2026). Resumo:
 - A lixeira retém 30 dias. Se as remoções foram recentes, são restauráveis —
   prazo correndo.
 
-Ferramenta de resposta: `scripts/drive-socorro.sh` restaura a lixeira e fecha
-os links públicos em lote, via Drive API, rodando no Cloud Shell.
+Ferramenta de resposta: `scripts/drive_socorro.py` restaura a lixeira, busca
+por ano de criação e fecha os links públicos em lote, via Drive API, rodando
+no Cloud Shell. Tem testes em `tests/`, executados pelo CI.
 
 Ao tratar deste assunto:
 
@@ -83,8 +84,12 @@ Ao tratar deste assunto:
 ## Convenções
 
 - Documentação e mensagens de commit em português.
-- Scripts em `bash` com `set -uo pipefail`, nunca `set -e` em laços que devem
-  continuar após falha de um item.
+- `bash` só para casca fina em volta de um binário (ex.: `gcloud`), com
+  `set -uo pipefail` e nunca `set -e` em laços que devem continuar após falha
+  de um item. Qualquer coisa que manipule JSON ou fale com API REST é Python:
+  a versão em bash do drive-socorro foi reescrita por esse motivo.
+- Código novo em Python vem com teste em `tests/`, usando só a biblioteca
+  padrão e substituindo a rede por dublê.
 - Erros precisam distinguir causas — "API desabilitada", "sem permissão" e
   "não encontrado" são diagnósticos diferentes e o usuário age diferente em
   cada um. Nunca colapsar tudo em "falhou".

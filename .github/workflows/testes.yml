@@ -1,0 +1,41 @@
+name: Testes
+
+# Roda a suíte a cada push e em pull request. Sem segredo, sem credencial:
+# os testes substituem a chamada de rede por um dublê e nunca tocam a API real.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Preparar o Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Rodar os testes
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Conferir a sintaxe dos scripts bash
+        run: |
+          for f in scripts/*.sh; do
+            [ -e "$f" ] || continue
+            bash -n "$f" && echo "ok: $f"
+          done
