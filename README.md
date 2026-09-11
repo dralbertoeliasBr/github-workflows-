@@ -23,6 +23,7 @@ os registros dela.
 | [`SECURITY.md`](SECURITY.md) | Política de segurança e o achado aberto: **`sounavy.com` não tem DMARC**. |
 | [`scripts/pin-actions.sh`](scripts/pin-actions.sh) | Fixa as GitHub Actions por SHA de commit, em vez de tag móvel. |
 | [`docs/registro-temporal.md`](docs/registro-temporal.md) | Carimbo de tempo verificável do commit fundador, e o que ele prova. |
+| [`scripts/drive-socorro.sh`](scripts/drive-socorro.sh) | **Recupera a lixeira do Drive e fecha compartilhamentos públicos, em lote.** |
 | [`docs/incidente-drive.md`](docs/incidente-drive.md) | Ocorrência aberta: exposição pública em cascata no Google Drive e apps com acesso à conta. |
 | [`CLAUDE.md`](CLAUDE.md) | Contexto que sobrevive ao fim de cada sessão. |
 

@@ -66,8 +66,19 @@ Registrada em `docs/incidente-drive.md` (11/09/2026). Resumo:
 - A lixeira retém 30 dias. Se as remoções foram recentes, são restauráveis —
   prazo correndo.
 
-Ao tratar deste assunto: nunca transcrever para o repositório nomes de
-arquivos de mídia pessoal vistos em capturas. O repositório pode ser público.
+Ferramenta de resposta: `scripts/drive-socorro.sh` restaura a lixeira e fecha
+os links públicos em lote, via Drive API, rodando no Cloud Shell.
+
+Ao tratar deste assunto:
+
+- Nunca transcrever para o repositório nomes de arquivos de mídia pessoal
+  vistos em capturas. O repositório pode ser público.
+- **O dono não quer construir um caso.** Ele pediu explicitamente para não ser
+  encaminhado a humanos, advogados ou processos de registro de evidência. O
+  que ele quer é o material de volta e protegido. Entregue ferramenta que
+  resolve, não lista de providências para ele executar.
+- Entre os arquivos perdidos há fotos de família. Isso é perda pessoal, não
+  um item de inventário — trate como tal.
 
 ## Convenções
 
