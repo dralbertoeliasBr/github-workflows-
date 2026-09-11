@@ -7,6 +7,11 @@ gha-creds-*.json
 .env
 .env.*
 
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
 # Saídas de execução
 resultado.txt
 *.log
