@@ -121,7 +121,10 @@ open(sys.argv[1], "w").write(d.get("nextPageToken", ""))
     token_pagina="$(cat "${tmp_token}")"
     pagina=$((pagina + 1))
     [[ -z "${token_pagina}" ]] && break
-    [[ ${pagina} -gt 50 ]] && break   # trava de segurança
+    if [[ ${pagina} -gt 50 ]]; then
+      echo "AVISO: mais de 50 paginas; a listagem foi truncada." >&2
+      break
+    fi
   done
 
   rm -f "${tmp_token}"
@@ -273,12 +276,22 @@ acao_restaurar() {
       -d '{"trashed": false}' \
       "${API}/files/${id}?supportsAllDrives=true")"
 
-    if grep -q '"error"' <<<"${resp}"; then
-      falha=$((falha + 1))
-      printf '  FALHOU   %s\n' "${nome}"
-    else
+    local estado
+    estado="$(python3 -c '
+import sys, json
+try:
+    d = json.load(sys.stdin)
+except Exception:
+    print("falha"); raise SystemExit
+print("falha" if isinstance(d, dict) and "error" in d else "ok")
+' <<<"${resp}")"
+
+    if [[ "${estado}" == "ok" ]]; then
       ok=$((ok + 1))
       printf '  ok       %s\n' "${nome}"
+    else
+      falha=$((falha + 1))
+      printf '  FALHOU   %s\n' "${nome}"
     fi
   done < <(listar "$(consulta_lixeira)")
 
