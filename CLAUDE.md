@@ -100,6 +100,32 @@ motivo:
 - O zigue-zague diagonal do JPEG aplicado a pixel cru é muito pior; no JPEG
   ele opera sobre coeficientes DCT, não sobre o pixel.
 
+## Testemunho selado (ciclo de arquitetura GaIA)
+
+`scripts/testemunha.py` + `docs/testemunha.md`. Responde à assimetria de
+registro: a pessoa é gravada e não grava, e quem mais precisa de prova é quem
+menos consegue produzi-la.
+
+Desenho: cifra no aparelho + chave partida em n com limiar k (Shamir) +
+cadeia de hashes. Separa **existência e integridade** (públicas, verificáveis
+sem chave alguma) de **conteúdo** (fechado, só abre com k partes reunidas).
+Protege a pessoa atendida contra abuso e o profissional contra acusação falsa
+com a mesma operação — "paz armada", termo do dono.
+
+Limites já registrados, não reabrir como se fossem resolvidos:
+
+- O **gatilho** (quando selar) não está resolvido e é político antes de
+  técnico. Sempre-ligado cobre a vítima incapacitada e cria registro
+  permanente; acionado-pela-pessoa falha justamente em quem foi dopado.
+- O desenho supõe **interesses divergentes** entre os guardiões das partes.
+  Funciona no consultório, com terceira parte institucional; é fraco na rua
+  e no motel, onde não há custodiante combinado de antemão.
+- A cifra usa HMAC-SHA256 porque a stdlib não traz AES. É demonstração de
+  protocolo; produção pede AES-GCM.
+- Licitude de registro varia por jurisdição: tem de ser parâmetro
+  configurável e auditável, nunca suposição embutida. Não dar orientação
+  jurídica.
+
 ## Convenções
 
 - Documentação e mensagens de commit em português.

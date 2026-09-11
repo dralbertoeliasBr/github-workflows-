@@ -25,6 +25,8 @@ os registros dela.
 | [`docs/registro-temporal.md`](docs/registro-temporal.md) | Carimbo de tempo verificável do commit fundador, e o que ele prova. |
 | [`scripts/drive_socorro.py`](scripts/drive_socorro.py) | **Recupera a lixeira do Drive e fecha compartilhamentos públicos, em lote.** |
 | [`scripts/varredura.py`](scripts/varredura.py) | Padrões de varredura de matriz, com round-trip verificado e medição por zlib. |
+| [`scripts/testemunha.py`](scripts/testemunha.py) | Testemunho selado: cifra + chave partida com limiar + cadeia de hashes. |
+| [`docs/testemunha.md`](docs/testemunha.md) | A arquitetura do testemunho selado, e onde ela não alcança. |
 | [`tests/`](tests/) | Suíte de testes — `python3 -m unittest discover -s tests` |
 | [`docs/incidente-drive.md`](docs/incidente-drive.md) | Ocorrência aberta: exposição pública em cascata no Google Drive e apps com acesso à conta. |
 | [`CLAUDE.md`](CLAUDE.md) | Contexto que sobrevive ao fim de cada sessão. |
