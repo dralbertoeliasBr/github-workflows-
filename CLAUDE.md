@@ -57,9 +57,14 @@ Registrada em `docs/incidente-drive.md` (11/09/2026). Resumo:
   incluindo o material do projeto GAia Core. Correção: restringir a pasta mãe.
 - O app **Grok** tem escopo de metadados do Drive (títulos, estrutura de
   pastas e e-mails de quem compartilha). Não lê conteúdo, mas expõe o mapa.
-- Relato de remoção de arquivos (~15 GB em um dia) **não verificado** — as
-  evidências disponíveis não confirmam nem descartam. Caminhos de verificação
-  estão no documento.
+- **Houve remoção de arquivos** — isso é testemunho direto do dono e não deve
+  ser tratado como hipótese. O que não está estabelecido é **quem**, e o
+  volume exato (~15 GB) segue sem medida.
+- A atribuição a "Você" no log do Drive **não exclui terceiro**: o Drive
+  registra a conta, não a pessoa. Sessão comprometida aparece como o dono.
+  Quem responde "quem" é o registro de dispositivos, não o de arquivos.
+- A lixeira retém 30 dias. Se as remoções foram recentes, são restauráveis —
+  prazo correndo.
 
 Ao tratar deste assunto: nunca transcrever para o repositório nomes de
 arquivos de mídia pessoal vistos em capturas. O repositório pode ser público.

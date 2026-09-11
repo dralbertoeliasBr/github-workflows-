@@ -84,16 +84,49 @@ conta. Todo app nessa lista que não for reconhecido deve sair.
 
 ---
 
-## 3. Sobre os arquivos que desapareceram — **não concluído**
+## 3. Sobre os arquivos que desapareceram
 
-O dono relata remoções graduais e depois em massa, incluindo ~15 GB em um dia.
-**As capturas fornecidas não comprovam nem descartam isso.** O que elas mostram
-é a linha de atividade de compartilhamento; as entradas de lixeira visíveis
-estão atribuídas ao próprio dono ("Você moveu 1 item para a lixeira"), o que
-não é prova de ação de terceiro.
+Duas afirmações distintas, com graus de estabelecimento diferentes. Confundi-las
+foi um erro da primeira versão deste documento.
 
-Isso não significa que o relato seja falso. Significa que ainda não foi
-verificado. Onde a resposta está:
+### 3.1 Houve remoção — **estabelecido**
+
+O dono relata remoções graduais e depois em massa, ~15 GB em um dia. As
+capturas mostram entradas de lixeira ("Você moveu 1 item para a lixeira"), e
+o relato é testemunho direto de quem usa a conta. Não há motivo para tratar a
+perda em si como hipótese: arquivos saíram.
+
+O que permanece sem medida é o **volume** — os 15 GB não foram confirmados por
+nenhuma tela de armazenamento até aqui.
+
+### 3.2 Quem removeu — **não estabelecido**
+
+Aqui vale uma correção técnica importante:
+
+> **A atribuição a "Você" no log não exclui terceiro.** O Google Drive registra
+> a **conta** que executou a ação, não a pessoa sentada no teclado. Se houver
+> sessão ativa de outra pessoa — cookie roubado, dispositivo ainda logado,
+> senha vazada —, tudo que ela apagar aparece no histórico como "Você".
+
+Portanto o log de lixeira não é evidência contra a hipótese de intrusão. Ele é
+simplesmente **silencioso** quanto ao autor. Quem responde essa pergunta é o
+registro de sessões e dispositivos, não o de arquivos.
+
+### 3.3 Janela de recuperação — **urgente**
+
+A lixeira do Google Drive retém itens por **30 dias** antes da exclusão
+definitiva. Se as remoções foram "dias atrás", o conteúdo provavelmente **ainda
+está lá e é restaurável** — mas o relógio está correndo, e cada dia que passa
+apaga definitivamente o que entrou 30 dias antes.
+
+1. Abrir `drive.google.com/drive/trash`
+2. Ordenar por data de exclusão
+3. Selecionar e **Restaurar** — antes de qualquer outra investigação
+
+Restaurar não destrói evidência: o item volta e o evento de exclusão permanece
+registrado no histórico de atividade.
+
+### Onde estabelecer o autor
 
 | Verificar | Onde | O que estabelece |
 |---|---|---|
@@ -132,8 +165,12 @@ conteúdo do Drive — para aquilo, a exportação do Takeout é a fonte.
 
 ## Ordem de execução recomendada
 
-1. Exportar evidência (Takeout), se for usar como prova
-2. **Restringir `00_COFRE_MESTRE`** — é a exposição que está ativa agora
-3. Remover acesso do Grok e revisar os 27 apps de login
-4. Conferir dispositivos e eventos de segurança
-5. Só então investigar as remoções, com a lixeira e a atividade completa
+Ordenada por **o que se perde se esperar**, não por gravidade abstrata.
+
+1. **Restaurar o que estiver na lixeira** — é o único item com prazo de
+   validade. O que passa de 30 dias some em definitivo e não volta.
+2. Exportar evidência (Takeout), se for usar como prova
+3. **Restringir `00_COFRE_MESTRE`** — é a exposição que está ativa agora
+4. Conferir dispositivos e eventos de segurança — responde "quem"
+5. Remover acesso do Grok e revisar os 27 apps de login
+6. Conferir o histórico de cobrança do plano de 5 TB
