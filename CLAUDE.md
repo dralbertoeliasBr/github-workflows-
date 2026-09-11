@@ -48,6 +48,22 @@ Projetos candidatos:
 3. **Não há registro DMARC** — o domínio aceita spoofing sem política de
    rejeição. É o mais grave dos três. Detalhes em `SECURITY.md`.
 
+## Ocorrência aberta no Google Drive
+
+Registrada em `docs/incidente-drive.md` (11/09/2026). Resumo:
+
+- A pasta `00_COFRE_MESTRE` foi compartilhada como "Qualquer pessoa com o
+  link" em 06/08 16:13, e **30 itens herdaram a exposição em cascata** —
+  incluindo o material do projeto GAia Core. Correção: restringir a pasta mãe.
+- O app **Grok** tem escopo de metadados do Drive (títulos, estrutura de
+  pastas e e-mails de quem compartilha). Não lê conteúdo, mas expõe o mapa.
+- Relato de remoção de arquivos (~15 GB em um dia) **não verificado** — as
+  evidências disponíveis não confirmam nem descartam. Caminhos de verificação
+  estão no documento.
+
+Ao tratar deste assunto: nunca transcrever para o repositório nomes de
+arquivos de mídia pessoal vistos em capturas. O repositório pode ser público.
+
 ## Convenções
 
 - Documentação e mensagens de commit em português.
