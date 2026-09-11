@@ -17,6 +17,8 @@ navegador do celular e já vem autenticado com a sua conta Google.
          ./scripts/drive_socorro.py restaurar
          ./scripts/drive_socorro.py restaurar --midia --periodo 2024
          ./scripts/drive_socorro.py listar-publicos
+         ./scripts/drive_socorro.py verificar ID_DO_ARQUIVO
+         ./scripts/drive_socorro.py fechar-um ID_DO_ARQUIVO --confirmar
          ./scripts/drive_socorro.py fechar-publicos --confirmar
 
 Nada é alterado sem um subcomando explícito. Os comandos "listar-*", "datar" e
@@ -338,6 +340,69 @@ def acao_restaurar(token, args):
     return 0 if ok else 1
 
 
+def acao_verificar(token, args):
+    """Estado completo de UM arquivo: datas, lixeira e quem alcança."""
+    campos = (f"{CAMPOS},trashed,shared,owners(emailAddress),"
+              "parents,webViewLink")
+    item = requisitar(token, f"/files/{args.id}", params={"fields": campos})
+
+    print(f"Arquivo: {item.get('name', '(sem nome)')}")
+    print(f"  tipo        {item.get('mimeType', '-')}")
+    print(f"  tamanho     {humano(item.get('size'))}")
+    print(f"  criado      {data(item)}   <- createdTime, gravado pelo Google")
+    print(f"  modificado  {data(item, 'modifiedTime')}")
+    print(f"  na lixeira  {'SIM' if item.get('trashed') else 'nao'}")
+    donos = ", ".join(o.get("emailAddress", "?")
+                      for o in item.get("owners", []) or [])
+    print(f"  dono        {donos or '-'}")
+
+    perms = requisitar(token, f"/files/{args.id}/permissions",
+                       params={"fields": "permissions(id,type,role,emailAddress)"})
+    lista = perms.get("permissions", []) or []
+
+    print(f"\nQuem alcança este arquivo ({len(lista)}):")
+    publico = False
+    for p in lista:
+        tipo = p.get("type", "?")
+        quem = p.get("emailAddress") or tipo
+        if tipo == "anyone":
+            publico = True
+            quem = "QUALQUER PESSOA COM O LINK"
+        print(f"  {p.get('role', '?'):<12} {quem}")
+
+    print("\n" + "=" * 44)
+    if publico:
+        print("EXPOSTO: qualquer pessoa com o link acessa este arquivo.")
+        print("\nPara fechar só este item, sem mexer no resto:")
+        print(f"  {sys.argv[0]} fechar-um {args.id} --confirmar")
+        return 3
+
+    print("Não está acessível por link público.")
+    return 0
+
+
+def acao_fechar_um(token, args):
+    """Remove o acesso público de UM arquivo, sem tocar nos demais."""
+    if not args.confirmar:
+        print("Isto remove o acesso por link deste arquivo.")
+        print(f"Para prosseguir:\n  {sys.argv[0]} fechar-um {args.id} --confirmar")
+        return 2
+
+    perms = requisitar(token, f"/files/{args.id}/permissions",
+                       params={"fields": "permissions(id,type)"})
+    pid = next((p["id"] for p in perms.get("permissions", []) or []
+                if p.get("type") == "anyone"), None)
+    if not pid:
+        print("Este arquivo já não tem acesso público.")
+        return 0
+
+    requisitar(token, f"/files/{args.id}/permissions/{pid}", metodo="DELETE")
+    print("Acesso por link removido.")
+    print("\nAtenção: isso impede acesso NOVO. Quem já baixou continua com a")
+    print("cópia — isso nenhuma ferramenta desfaz.")
+    return 0
+
+
 def acao_listar_publicos(token, args):
     itens = listar(token, montar_consulta(publico=True))
     print("Acessível por link público\n")
@@ -437,6 +502,13 @@ def main() -> int:
 
     sub.add_parser("listar-publicos", help="o que está acessível por link")
 
+    sp = sub.add_parser("verificar", help="estado completo de um arquivo pelo ID")
+    sp.add_argument("id", help="ID do arquivo no Drive")
+
+    sp = sub.add_parser("fechar-um", help="remove o acesso por link de um arquivo")
+    sp.add_argument("id", help="ID do arquivo no Drive")
+    sp.add_argument("--confirmar", action="store_true")
+
     sp = sub.add_parser("fechar-publicos", help="remove o acesso por link")
     sp.add_argument("--confirmar", action="store_true")
 
@@ -448,6 +520,8 @@ def main() -> int:
         "periodo": acao_periodo,
         "datar": acao_datar,
         "listar-publicos": acao_listar_publicos,
+        "verificar": acao_verificar,
+        "fechar-um": acao_fechar_um,
         "fechar-publicos": acao_fechar_publicos,
     }
 
