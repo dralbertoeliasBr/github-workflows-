@@ -27,6 +27,7 @@ os registros dela.
 | [`scripts/varredura.py`](scripts/varredura.py) | Padrões de varredura de matriz, com round-trip verificado e medição por zlib. |
 | [`scripts/testemunha.py`](scripts/testemunha.py) | Testemunho selado: cifra + chave partida com limiar + cadeia de hashes. |
 | [`docs/testemunha.md`](docs/testemunha.md) | A arquitetura do testemunho selado, e onde ela não alcança. |
+| [`scripts/cuidado.py`](scripts/cuidado.py) | Trajetória de cuidado: a inclinação do declínio, que a convivência esconde. |
 | [`tests/`](tests/) | Suíte de testes — `python3 -m unittest discover -s tests` |
 | [`docs/incidente-drive.md`](docs/incidente-drive.md) | Ocorrência aberta: exposição pública em cascata no Google Drive e apps com acesso à conta. |
 | [`CLAUDE.md`](CLAUDE.md) | Contexto que sobrevive ao fim de cada sessão. |

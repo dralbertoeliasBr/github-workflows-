@@ -126,6 +126,32 @@ Limites já registrados, não reabrir como se fossem resolvidos:
   configurável e auditável, nunca suposição embutida. Não dar orientação
   jurídica.
 
+## Trajetória de cuidado (ciclo GaIA)
+
+`scripts/cuidado.py`. Responde a "qual é a hora de tirar a pessoa da casa
+dela?" — pergunta que nenhum evento isolado responde. Quem responde é a
+**inclinação** ao longo de janelas.
+
+Tese central: **habituação**. Quem convive se adapta ao declínio na mesma
+velocidade em que ele ocorre e deixa de enxergá-lo; percebe o degrau, não a
+rampa. Registro objetivo não habitua — essa é a contribuição real do cuidado
+digital, e não vigiar.
+
+Desenho:
+
+- **Evento, não cena.** Vocabulário fechado de nove eventos de segurança.
+  Nunca imagem, nunca áudio. O que não é coletado não vaza.
+- **O aparelho que já existe.** Supõe o telefone no bolso. Cuidado digital
+  que exige hardware caro só alcança quem menos precisa — a objeção de
+  desigualdade de recurso é do dono e é procedente.
+- **Diretiva antecipada.** A pessoa configura enquanto ainda pode; depois
+  valem as regras dela, não as que a família decidir.
+- Reaproveita a cadeia de hashes de `testemunha.py`: protege a pessoa contra
+  internação por conveniência e o cuidador contra acusação de negligência.
+
+Limite explícito no código e na saída: **não decide internação, não
+diagnostica.** Entrega a trajetória; a decisão é clínica e humana.
+
 ## Convenções
 
 - Documentação e mensagens de commit em português.
